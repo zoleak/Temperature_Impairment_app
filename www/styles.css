@@ -1,0 +1,34 @@
+
+.outer{
+//background-color: black;
+
+}
+
+h1 {
+font-family: Georgia;
+color: #404049;
+}
+
+h2 {
+font-family: Georgia;
+color: #404049;
+}
+
+h3 {
+font-family: Georgia;
+color: #404049;
+}
+
+//Gives tabPanel color when active//
+.navbar-default .navbar-nav > .active > a, 
+                           .navbar-default .navbar-nav > .active > a:focus, 
+.navbar-default .navbar-nav > .active > a:hover {
+                                color: #ffffcc;
+                            }
+
+.outer img {
+
+	//background-image: url("https://www.state.nj.us/dep/wms/bears/images/swqs-mainpic-800x300.jpg");
+	//background-repeat: no-repeat;
+	opacity: 0.5;
+}
