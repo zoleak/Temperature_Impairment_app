@@ -1,5 +1,4 @@
 ### Author: Kevin Zolea ###
-### Date: 11/2018 ###
 ### App for temperature impairments ###
 ###############################################################################
 ### Download necessary packages ###
@@ -13,8 +12,6 @@ pacman::p_load("ggplot2","tidyr","plyr","dplyr","readxl","shinycssloaders",
                "gridExtra","stringr","ggpmisc","data.table","rlang","purrr",
                "shiny","DT","leaflet","sf","rmapshaper","shinyWidgets",
                "rsconnect","shinyjs","htmltools","htmlwidgets","leaflet.extras")
-
-
 ###############################################################################
 ### Read in temp data ###
 temp_data<- read_xlsx("qad_temperature_data_1997_to_2018.xlsx",sheet ="Sheet 1",col_names = T)%>%
@@ -42,8 +39,8 @@ HUC_wx_station_relate<- read_xls("weather_station_HUC_relate.xls",col_names = T)
   select(HUC14,WMA,STATION,Lat,Long)
 ### Now read in Weather station dataset ###
 multistation_wx_data<-read_xlsx("Multistation_Wx_Data.xlsx",col_names = T)%>%
-  select(STATION,stdate,TMAX)%>%
-  mutate(stdate = as.Date(stdate))
+  select(STATION,DATE,TMAX)%>%
+  mutate(stdate = as.Date(DATE))
 ### Join HUC_wx_station_relate with multistation_wx_data to get Max temp data for weather stations ###
 final_wx_temp_data<-left_join(HUC_wx_station_relate,multistation_wx_data,by = "STATION")
 ### Need to change column name to match with temp_data to be able to plot ###
@@ -53,15 +50,15 @@ final_wx_temp_data<-final_wx_temp_data%>%
   mutate(val = round((val-32)*5/9,digits=2))
 
 ### Read in shapefiles ###
-wx_stations<-st_read(getwd(),layer = "WxStationLocations")
-temp_impaired_hucs<-st_read(getwd(),layer = "Temp_Impairments")
+wx_stations<-st_read("shapefiles/WxStationLocations.shp")
+temp_impaired_hucs<-st_read("shapefiles/Temp_Impairments.shp")
 NJ_HUCs<-st_read(getwd(),layer = "2014_NJ_Integrated_Report_AU")
 imp_temp_HUC<-unique(temp_impaired_hucs$HUC14TXT)
-monitoring_stations<-st_read(getwd(),layer = "2016_MonitoringSites_FINAL")
-streams<-st_read(getwd(),layer = "3rdorderupStreams_HUC14_join")%>%
-  select(HUC14,W_NAME,STREAMORDE,geometry)
-BFF_stations<-st_read(getwd(),layer = "BFFstation_huc_join")%>%
-  select(Site,Location,Lat,Long_,HUC14,geometry)
+monitoring_stations<-st_read("shapefiles/2016_MonitoringSites_FINAL.shp")
+#streams<-st_read("shapefiles/3rdorderupStreams_HUC14_join.shp")%>%
+#  select(HUC14,W_NAME,STREAMORDE,geometry)
+#BFF_stations<-st_read("shapefiles/BFFstation_huc_join.shp")%>%
+ # select(Site,Location,Lat,Long_,HUC14,geometry)
 ### Change projections to work with leaflet map ###
 NJ_HUCs<-st_transform(NJ_HUCs, crs="+init=epsg:4326")
 temp_impaired_hucs<-st_transform(temp_impaired_hucs, crs="+init=epsg:4326")
@@ -108,8 +105,7 @@ ui <- navbarPage(theme = shinytheme("yeti"),
                  tabPanel("About App",
                           div(class= "outer",
                               tags$head(
-                                #includeCSS("/Users/kevinzolea/Desktop/Temp_Impairments/www/styles.css")),
-                              includeCSS("V:/lum/WM&S/BEAR (Bureau of Environmental Analysis and Restoration)/Envpln/Hourly Employees/KevinZolea/Rwork/Temperature_Plots/Temperature_Impairment_Work/www/styles.css")),
+                              includeCSS("www/styles.css")),
                               h1("Welcome to the NJDEP's Temperature Impairment's app!"),
                               h2("Introduction:"),
                               h3("The purpose of this app is to better understand the water temperature impairments
